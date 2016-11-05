@@ -1,0 +1,40 @@
+﻿<Window x:Class="InventoryManagerment.JobCardTracker.JobCardWarning"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InventoryManagerment.JobCardTracker"
+        mc:Ignorable="d"
+        Title="แจ้งเตือนใบงาน" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type DataGridCell}" x:Key="DataGridCellCenter">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <DataGrid x:Name="dgWarningList" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Order_Detail_ID" Binding="{Binding Order_Detail_ID}" Visibility="Hidden" />
+                <DataGridTextColumn x:Name="RowNo" Header="ลำดับที่" Binding="{Binding RowNo}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Warning_No" Header="ครั้งที่เตือน" Binding="{Binding Warning_No}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Warning_Date" Header="วันที่เตือน" Binding="{Binding Warning_Date}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Order_ID" Header="เลขที่ใบสั่ง" Binding="{Binding Order_ID}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Order_Day_Count" Header="อายุใบสั่ง(วัน)" Binding="{Binding Order_Day_Count}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Order_to" Header="ผู้รับผิดชอบ" Binding="{Binding Order_to}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="Product_Code" Header="รหัสวัตถุดิบ/สินค้า" Binding="{Binding Product_Code}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Operation_Detail" Header="ชื่อวัตถุดิบ/สินค้า" Binding="{Binding Operation_Detail}" IsReadOnly="True" Width="Auto"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="MouseDoubleClick" Handler="dgWarningList_Row_DoubleClick"/>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+    </Grid>
+</Window>

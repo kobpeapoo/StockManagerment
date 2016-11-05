@@ -1,0 +1,154 @@
+﻿<Window x:Class="InventoryManagerment.JobCardTracker.JobCardTracking"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InventoryManagerment.JobCardTracker"
+        xmlns:c="clr-namespace:InventoryManagerment.JobCardTracker.Controller"
+        xml:lang="th-TH"
+        mc:Ignorable="d"
+        Title="ติดตามใบงานย่อย" Width="1024" Height="700"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded"
+        WindowState="Maximized">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <TextBox x:Name="PART_TextBox" Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy',
+                            RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="styleCalendar" TargetType="{x:Type Calendar}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Viewbox>
+                            <CalendarItem x:Name="PART_CalendarItem"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}">
+                            </CalendarItem>
+                        </Viewbox>
+                        <!--<Calendar>
+                            <Calendar.CalendarButtonStyle>
+                                <Style TargetType="CalendarButton">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <CalendarButton>
+                                                    <TextBlock Text="{Binding}"/>
+                                                </CalendarButton>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Calendar.CalendarButtonStyle>
+                        </Calendar>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type DataGridCell}" x:Key="DataGridCellCenter">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type DataGridCell}" x:Key="DataGridCellRight">
+            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+        </Style>
+
+        <c:ModTenConverter x:Key="ModTen"/>
+
+    </Window.Resources>
+
+    <Grid>
+        <Rectangle Fill="#FFF4F4F5" Height="230" Margin="10,10,10,0" Stroke="Black" VerticalAlignment="Top"/>
+        <GroupBox x:Name="groupBox" Header="ค้นหารายการ" HorizontalAlignment="Left" Margin="32,23,0,0" VerticalAlignment="Top" Height="144" Width="505"/>
+        <GroupBox x:Name="groupBox_Copy" Header="กรองข้อมูล" Margin="558,22,0,0" VerticalAlignment="Top" Height="145" HorizontalAlignment="Left" Width="392"/>
+
+        <Label x:Name="label1" Content="รหัสวัตถุดิบ/สินค้า" HorizontalAlignment="Left" Margin="52,56,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtProductId" HorizontalAlignment="Left" Height="23" Margin="149,59,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label2" Content="ชื่อวัตถุดิบ/สินค้า" HorizontalAlignment="Left" Margin="52,85,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtProductName" HorizontalAlignment="Left" Height="23" Margin="149,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="label4" Content="ผู้รับผิดชอบ" HorizontalAlignment="Left" Margin="291,56,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtOwner" HorizontalAlignment="Left" Height="23" Margin="389,59,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label5" Content="ชื่อผู้ขาย" HorizontalAlignment="Left" Margin="291,85,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtVender" HorizontalAlignment="Left" Height="23" Margin="389,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label6" Content="เลขที่ใบสั่ง" HorizontalAlignment="Left" Margin="51,114,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtOrderNumber" HorizontalAlignment="Left" Height="23" Margin="149,117,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="label7" Content="สถานะใบสั่งงาน" HorizontalAlignment="Left" Margin="578,56,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="rdoStatusAll" Content="ทั้งหมด" HorizontalAlignment="Left" Margin="670,63,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="rdoStatusWait" Content="รอปิดงาน" HorizontalAlignment="Left" Margin="770,63,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <RadioButton x:Name="rdoStatusClose" Content="ปิดงาน" HorizontalAlignment="Left" Margin="870,63,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label8" Content="วันที่สั่งงาน" HorizontalAlignment="Left" Margin="578,85,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dpOrderFrom" CalendarStyle="{StaticResource styleCalendar}" HorizontalAlignment="Left" Height="23" Margin="647,88,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label9" Content="วันที่ปิดงาน" HorizontalAlignment="Left" Margin="578,114,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dpOrderCloseFrom" CalendarStyle="{StaticResource styleCalendar}" HorizontalAlignment="Left" Height="23" Margin="647,117,0,0" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="label10" Content="ถึง" HorizontalAlignment="Left" Margin="772,85,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dpOrderTo" CalendarStyle="{StaticResource styleCalendar}" HorizontalAlignment="Left" Height="23" Margin="801,88,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label11" Content="ถึง" HorizontalAlignment="Left" Margin="772,114,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dpOrderCloseTo" CalendarStyle="{StaticResource styleCalendar}" HorizontalAlignment="Left" Height="23" Margin="801,117,0,0" VerticalAlignment="Top" Width="120"/>
+
+        <Button x:Name="btnSearch" Content="ค้นหาข้อมูล" HorizontalAlignment="Left" Margin="377,184,0,0" VerticalAlignment="Top" Width="108" Height="36" Click="btnSearch_Click"/>
+        <Button x:Name="btnClear" Content="เครียร์" HorizontalAlignment="Left" Margin="508,184,0,0" VerticalAlignment="Top" Width="108" Height="36" Click="btnClear_Click"/>
+
+        <DataGrid x:Name="dgMainContent" Margin="10,254,10,0" VerticalAlignment="Top" Height="186" AutoGenerateColumns="False" CanUserAddRows="False"
+                  SelectionChanged="dgMainContent_SelectionChanged" RowEditEnding="dgMainContent_RowEditEnding">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Order_Detail_ID" Binding="{Binding Order_Detail_ID}" Visibility="Hidden" />
+                <DataGridTextColumn x:Name="RowNo" Header="ลำดับ" Binding="{Binding RowNo}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="CreateDate" Header="วันที่" Binding="{Binding CreateDate}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Order_ID" Header="เลขที่ใบสั่ง" Binding="{Binding Order_ID}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="OrderDayCount" Header="อายุใบสั่ง/วัน" Binding="{Binding OrderDayCount}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Order_to" Header="ผู้รับผิดชอบ" Binding="{Binding Order_to}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="Product_Code" Header="รหัสวัตถุดิบ/สินค้า" Binding="{Binding Product_Code}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="Operation_Detail" Header="ชื่อวัตถุดิบ/สินค้า" Binding="{Binding Operation_Detail}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="Vendor" Header="ชื่อผู้ขาย" Binding="{Binding Vendor}" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="Suggest_Order" Header="จำนวนสั่ง" Binding="{Binding Suggest_Order}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellRight}"/>
+                <DataGridTextColumn x:Name="Min_Stock" Header="Min" Binding="{Binding Min_Stock}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellRight}"/>
+                <DataGridTextColumn x:Name="TD_QTY" Header="เหลือ TD" Binding="{Binding TD_QTY}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellRight}"/>
+                <DataGridTextColumn x:Name="LP_QTY" Header="เหลือ LP" Binding="{Binding LP_QTY}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellRight}"/>
+                <DataGridTextColumn x:Name="TOTAL_QTY" Header="เหลือรวม" Binding="{Binding TOTAL_QTY}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellRight}"/>
+                <DataGridCheckBoxColumn x:Name="Order_Status" Header="สถานะ (รอ/ปิด)" Binding="{Binding Order_Status, UpdateSourceTrigger=PropertyChanged}" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Note_Close" Header="Note ปิด" Binding="{Binding Note_Close, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="Auto"/>
+                <DataGridTextColumn x:Name="closeDate" Header="วันที่ปิด" Binding="{Binding closeDate}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+            </DataGrid.Columns>
+            <!--<DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=OrderDayCount,Converter={StaticResource ModTen},ConverterParameter=10}" Value="True" />
+                                <Condition Binding="{Binding Path=Order_Status}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background"  Value="Red" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                    <EventSetter Event="MouseDoubleClick" Handler="DGMain_Row_DoubleClick"/>
+                </Style>
+            </DataGrid.RowStyle>-->
+        </DataGrid>
+
+        <Label x:Name="label1_Copy" Content="ประวัติการติดตาม" Margin="10,450,0,0" FontWeight="Bold" Foreground="Black" OpacityMask="#FFD31616" Background="#FFF9ED73" HorizontalAlignment="Left" Width="100" Height="26" VerticalAlignment="Top"/>
+        <DataGrid x:Name="dgFollowCard" HorizontalAlignment="Left" Margin="10,476,0,20" Width="475" RenderTransformOrigin="-0.43,0.202" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="FollowNo" Header="ครั้งที่เตือน" Binding="{Binding Warning_No}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="WarningDate" Header="วันที่เตือน" Binding="{Binding Warning_Date}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="NotedDate" Header="วันที่รับทราบ" Binding="{Binding Warning_Noted_Date}" IsReadOnly="True" Width="Auto" CellStyle="{StaticResource DataGridCellCenter}"/>
+                <DataGridTextColumn x:Name="Reason" Header="เหตุผล" Binding="{Binding Reason}" IsReadOnly="True" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+
+</Window>

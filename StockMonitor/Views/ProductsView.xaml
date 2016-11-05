@@ -1,0 +1,159 @@
+﻿<Window x:Class="InventoryManagerment.Views.ProductsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InventoryManagerment.Views"
+        mc:Ignorable="d"
+      
+        Title="Stock Monitor" Height="740" Width="1200" Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Resources>
+        <Style x:Key="RightGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="RightCell">
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10,0,0,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="221"/>
+            <RowDefinition Height="233"/>
+            <RowDefinition Height="255"/>
+
+        </Grid.RowDefinitions>
+        <Rectangle x:Name="searchZone" Fill="#FFE4E8E8" Margin="0,0,5,5" Stroke="Black" RadiusX="5" RadiusY="5" />
+        <Rectangle Fill="#FFE8EAEA" HorizontalAlignment="Left" Height="119" Margin="59,53,0,0" RadiusY="5" RadiusX="5" Stroke="#FF06A806" VerticalAlignment="Top" Width="584"/>
+        <DataGrid ItemsSource="{Binding listProduct}"   CanUserResizeColumns="True"  x:Name="DataGridPrducts" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                  AutoGenerateColumns="False" CanUserAddRows="False"   Margin="0,216,5,0" 
+                  SelectionChanged="datagrid_SelectionChanged"  SelectedItem="{Binding Select_Product, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="232" VerticalAlignment="Top" RowEditEnding="DataGridPrducts_RowEditEnding" Grid.RowSpan="2" >
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HaveToOder}" Value="1">
+                            <Setter Property="Background" Value="#FFB1FBFF"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn >
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox x:Name="CheckALL" Checked="CheckBox_Checked" Unchecked="UnheckBox_Checked"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate  >
+                        <DataTemplate >
+                            <CheckBox x:Name="chkSelect" IsChecked="{Binding Select_Product, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="rowNum"  Header="ลำดับ"  Binding="{Binding RowNum}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="Product_Code" Header="รหัสวัตถุดิบ/สินค้า" Width="100" Binding="{Binding Product_Code}" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="Product_Name" Header="ชื่อวัตถุดิบ/สินค้า"   Width="350" Binding="{Binding Product_Name}" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="Use" Header="การใช้งาน" Binding="{Binding Use, UpdateSourceTrigger=PropertyChanged}" Width="80" />
+                <DataGridTextColumn Header="Min" x:Name="min" Binding="{Binding Min_Stock}"  Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="Order_To" Header="สั่งใคร" Binding="{Binding Order_to, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                <DataGridTextColumn x:Name="checkTD" Header="TD เช็ค จน." Width="50" Binding="{Binding Check_TD,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn x:Name="checkLP" Header="LP เช็ค จน." Width="50" Binding="{Binding Check_LP, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn x:Name="remainTD" Header="คงคลัง TD" Width="60" Binding="{Binding TD_QTY}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="reamainLP" Header="คงคลัง LP" Width="60" Binding="{Binding LP_QTY}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="sumRemain" Header="รวม" Binding="{Binding TOTAL_QTY}" Width="60" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="stockUnit" Header="หน่วย" Width="40" Binding="{Binding SUnit_Name}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="convertSum" Width="40" Header="แปลงหน่วยรวม" Binding="{Binding Total_ConvertQTY}" HeaderStyle="{StaticResource RightGridHeaderStyle}"  ElementStyle="{StaticResource RightCell}"  IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="convertUnit" Width="40" Header="แปลงหน่วย" Binding="{Binding SUnit_Name}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="convertMulti" Width="40" Header="ตัวคุณ" Binding="{Binding Factor}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="convertNote" Width="40" Header="แปลงหน่วย Note" Binding="{Binding Note_Unit_Convert, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="Suggest_Order" Header="ปริมาณสั่งซึ้อ" Width="80" Binding="{Binding Suggest_Order}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="Suggest_Order_unit" Header="หน่วยสั่งซื้อ" Width="80" Binding="{Binding PUnit_Name}" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="SuggestNote" Header="สั่งซึ้อ Note" Binding="{Binding Note_Purchase, UpdateSourceTrigger=PropertyChanged}"  Width="100"/>
+                <DataGridTextColumn x:Name="costAvg" Header="ต้นทุนเฉลี่ย" Width="80"  Binding="{Binding CostAvg, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="costNote" Header="ต้นทุนNote" Width="80" Binding="{Binding CostNote, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="empty" Header="หมด" Width="30" Binding="{Binding Empty, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="changeTD" Header="เคลื่อนไหว TD" Width="80" Binding="{Binding Chang_Stock_TD}" IsReadOnly="True" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"/>
+                <DataGridTextColumn x:Name="changeLP" Header="เคลื่อนไหว LP" Width="80" Binding="{Binding Chang_Stock_LP}" IsReadOnly="True" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"/>
+                <DataGridTextColumn x:Name="vendorName" Header="ผู้ขายชื่อ" Width="150" Binding="{Binding Vendor, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="vendorNote" Header="ผู้ขายNote" Width="100" Binding="{Binding Note_Vendor, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="nameOrder" Header="ชื่อสั่งซื้อ" Width="100" Binding="{Binding Vendor_to_Purchase, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="P0" Header="ราคาตั้ง" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding P0, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGridTextColumn x:Name="P1" Header="ลด 1 %" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding P1, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="P2" Header="ลด 2 %" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding P2, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="P3" Header="ลด 3 %" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding P3, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="P_Note" Header="Note" Width="100" Binding="{Binding P_Note, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="VAT" Header="VAT" Width="50" Binding="{Binding VAT, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="S0" Header="ราคาขายปลีก" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding S0, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="S1" Header="ราคาขายส่ง 1" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding S1, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="S2" Header="ราคาขายส่ง 2" Width="50" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Binding="{Binding S2, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="S3" Header="ราคาขายส.ศิริ ศ93" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Width="50" Binding="{Binding S3, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn  x:Name="S_Note" Header="Note" Width="80" Binding="{Binding S_Note, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn  x:Name="QC_Form" Header="QC Form" Width="60" Binding="{Binding QC_Form, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--
+        
+        <Button x:Name="BtnSave" Content="บันทึกข้อมูล" Margin="739,0,0,28" Grid.Row="2" FontSize="16" BorderBrush="#FF010611" Click="BtnSave_Click" Background="#FF349FE8" HorizontalAlignment="Left" Width="99" Height="39" VerticalAlignment="Bottom"/>
+        -->
+        
+        <Button x:Name="BtnExit" Content="ออกจากโปรแกรม" Margin="1025,0,0,28" Grid.Row="2" RenderTransformOrigin="-0.109,0.45" FontSize="16" FontWeight="Bold" Click="BtnExit_Click" HorizontalAlignment="Left" Width="147" Height="39" VerticalAlignment="Bottom"/>
+        <Label x:Name="datail" Content="ชื่อวัตถุดิบ/สินค้า " Margin="632,0,449,195" Grid.Row="2" FontSize="12" Height="33" VerticalAlignment="Bottom"/>
+        <Label x:Name="LbProduct_code" Content="รหัสวัตถุดิบ/สินค้า" HorizontalAlignment="Left" Margin="68,73,0,0" VerticalAlignment="Top" Height="26" Width="99"/>
+        <TextBox x:Name="TbProduct_code" HorizontalAlignment="Left" Height="23" Margin="175,70,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="164"/>
+        <Label x:Name="LbProduct_Name" Content="ชื่อวัตถุดิบ/สินค้า" HorizontalAlignment="Left" Margin="72,102,0,0" VerticalAlignment="Top" Width="92" Height="26"/>
+        <TextBox x:Name="TbProduct_Name" HorizontalAlignment="Left" Height="23" Margin="175,102,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="164"/>
+        <Button x:Name="btnSearch" Content="ค้นหาข้อมูล" HorizontalAlignment="Left" Margin="532,184,0,0" Width="74" RenderTransformOrigin="0.723,1.65" Click="btnSearch_Click" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="btnClear" Content="เคลียร์ข้อมูล" HorizontalAlignment="Left" Margin="632,184,0,0" VerticalAlignment="Top" Width="75" Click="btnClear_Click" Height="20"/>
+        <TextBox x:Name="txtDatailSelect" Margin="739,34,0,0" Grid.Row="2" TextWrapping="Wrap" Text="" IsReadOnly="True" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left" Width="433"/>
+        <TextBox x:Name="textCurentDate" HorizontalAlignment="Left" Height="23" Margin="150,12,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True"/>
+        <Label x:Name="label" Content="วันที่ใช้งาน" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="58,9,0,0" Width="77" FontWeight="Bold" Height="26" />
+        <Label x:Name="labUse" Content="การใช้งาน" HorizontalAlignment="Left" Margin="102,133,0,0" VerticalAlignment="Top" Width="62" Height="26"/>
+        <TextBox x:Name="textUse" HorizontalAlignment="Left" Height="23" Margin="175,138,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="164"/>
+        <TextBox x:Name="textOrderTO" HorizontalAlignment="Left" Height="23" Margin="450,70,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="165"/>
+        <Label x:Name="labVendorName" Content="ชื่อผู้ขาย" HorizontalAlignment="Left" Margin="379,99,0,0" VerticalAlignment="Top" Width="63" Height="26"/>
+        <TextBox x:Name="textVendorName" HorizontalAlignment="Left" Height="23" Margin="450,102,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="165"/>
+        <Button x:Name="btnPrint" Content="ออกใบสั่งงานย่อย" HorizontalAlignment="Left" Margin="866,0,0,28" Grid.Row="2" Width="133" FontSize="16" FontWeight="Bold" Click="btnPrint_Click" Height="39" VerticalAlignment="Bottom"/>
+        <Label x:Name="lbUse" Content="การใช้งาน" HorizontalAlignment="Left" Margin="663,96,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.237,0.231" Height="26" Width="70"/>
+        <TextBox x:Name="txtUseDetail" IsReadOnly="True" Height="62" Margin="739,99,0,0" Grid.Row="2" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="433"/>
+        <Label x:Name="label1" Content="ประวัติการสั่งซื้อ" Margin="0,120,0,109"  Grid.Row="2" FontWeight="Bold" Foreground="Black" OpacityMask="#FFD31616" Background="#FFF9ED73" HorizontalAlignment="Left" Width="100"/>
+        <DataGrid x:Name="dataGridPurHis" CanUserAddRows="False"  AutoGenerateColumns="False"  ItemsSource="{Binding lsPurchaseHis}" Margin="0,147,0,0" Grid.Row="2" Height="98" VerticalAlignment="Top" HorizontalAlignment="Left" Width="606">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding RowNum}"  Header="ลำดับ" Width="40"/>
+                <DataGridTextColumn Binding="{Binding PURCHASE_DATE}"  Header="วันที่ซื้อ" Width="80"/>
+                <DataGridTextColumn Binding="{Binding VENDOR_CODE}"  Header="รหัสผู้ขาย" Width="80"/>
+                <DataGridTextColumn Binding="{Binding VENDOR_NAME}"  Header="ชื่อผู้ขาย" Width="120"/>
+                <DataGridTextColumn Binding="{Binding QTY}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}"  Header="จำนวน" Width="80"/>
+                <DataGridTextColumn Binding="{Binding PRICE}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}" Header="ราคา" Width="80" />
+                <DataGridTextColumn Binding="{Binding DISCOUNT_STR}" Header="ส่วนลด" Width="60"/>
+                <DataGridTextColumn Binding="{Binding VAT_RATE}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}" Header="% VAT" Width="60"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label x:Name="label2" Content="  ค้นหารายการ" HorizontalAlignment="Left" Margin="70,40,0,0" VerticalAlignment="Top" Width="86" TextOptions.TextFormattingMode="Display" Background="#FFE4E8E8" Foreground="#FF047021" Height="25"/>
+        <Rectangle Fill="#FFE4E8E8" Height="119" Margin="726,53,0,0" RadiusY="5" RadiusX="5" Stroke="#FF019B2B" VerticalAlignment="Top" HorizontalAlignment="Left" Width="412"/>
+        <Label x:Name="label2_Copy" Content="  กรองข้อมูล" HorizontalAlignment="Left" Margin="747,40,0,0" VerticalAlignment="Top" Width="86" TextOptions.TextFormattingMode="Display" Background="#FFE4E8E8" Foreground="#FF047021" Height="25"/>
+        <Label x:Name="labRemain" Content="แสดง Stock คงเหลือ" HorizontalAlignment="Left" Margin="747,67,0,0" VerticalAlignment="Top" Height="26" Width="113" RenderTransformOrigin="-0.039,-0.462"/>
+        <RadioButton x:Name="radBtn1" GroupName="reamin" Content="ทั้งหมด" HorizontalAlignment="Left" Margin="776,98,0,0" VerticalAlignment="Top" Checked="radioButton_Checked" Height="15" Width="51" RenderTransformOrigin="6.882,6.4"/>
+        <RadioButton x:Name="radBtn2" GroupName="reamin" Content="น้อยกว่า/เท่ากับ Minimum (10%)" HorizontalAlignment="Left" Margin="776,121,0,0" VerticalAlignment="Top" Checked="radioButton_Checked" Height="15" Width="209"/>
+        <RadioButton x:Name="radBtn3" GroupName="reamin" Content="เฉพาะรายการที่ต้องสั่ง" HorizontalAlignment="Left" Margin="776,144,0,0" IsChecked="True" VerticalAlignment="Top" Checked="radioButton_Checked" Height="15" Width="144"/>
+        <Label x:Name="label1_Copy" Content="ประวัติการออกใบงานย่อย" Margin="0,3,0,227"  Grid.Row="2" FontWeight="Bold" Foreground="Black" OpacityMask="#FFD31616" Background="#FFF9ED73" HorizontalAlignment="Left" Width="142"/>
+        <DataGrid x:Name="dataGridHistoryOrder" CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding lsOrderHisStock}" HorizontalAlignment="Left" Margin="0,29,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-1.417,-0.231" Width="606" Height="90">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding orderStatus}" Value='รอปิดงาน'>
+                            <Setter Property="Foreground" Value="Red"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="วันที่เอกสาร" Width="90" Binding="{Binding docDate}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="เลขที่เอกสาร" Width="90" Binding="{Binding list_Num_Order}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="เรื่อง/รายละเอียด" Width="250" Binding="{Binding topic}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="จำนวนสั่ง" Width="80" Binding="{Binding suggestOrder}" HeaderStyle="{StaticResource RightGridHeaderStyle}" ElementStyle="{StaticResource RightCell}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="สถานะ" Width="90" Binding="{Binding orderStatus}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label x:Name="Order_to" Content="สั่งใคร" HorizontalAlignment="Left" Margin="379,70,0,0" VerticalAlignment="Top" Width="63" Height="26"/>
+    </Grid>
+</Window>
