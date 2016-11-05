@@ -1,3 +1,10 @@
 Test
+<<<<<<< HEAD
 ABCD
 Insert 1 Kob4
+=======
+OTTT
+Test
+ABCD
+DRASASASA
+>>>>>>> KOB3
